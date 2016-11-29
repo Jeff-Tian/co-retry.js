@@ -1,4 +1,4 @@
-# co-retry.js
+# co-retry.js [![Build Status](https://travis-ci.org/Jeff-Tian/co-retry.js.svg?branch=master)](https://travis-ci.org/Jeff-Tian/co-retry.js)
 Retry an action specified times automatically if failed with predefined error handlers.
  
 ## Installation

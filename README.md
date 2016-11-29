@@ -1,6 +1,11 @@
 # co-retry.js
 Retry an action specified times automatically if failed with predefined error handlers.
  
+## Installation
+```npm
+npm install co-retry.js --save
+```
+ 
 ## Usage
 ### Simple example:
 ```javascript

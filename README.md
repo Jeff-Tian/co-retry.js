@@ -1,4 +1,4 @@
-# retry.js
+# co-retry.js
 Retry an action specified times automatically if failed with predefined error handlers.
  
 ## Usage
@@ -6,7 +6,7 @@ Retry an action specified times automatically if failed with predefined error ha
 ```javascript
 'use strict';
 
-const tryAction = require('retry.js');
+const tryAction = require('co-retry.js');
 
 let action = function *(){
     // your action that might fail
@@ -34,7 +34,7 @@ const timeUuid = require('greenShared/util').timeUuid;
 const parse = require('co-body');
 const config = require('../config');
 const fs = require('fs');
-const tryAction = require('retry.js');
+const tryAction = require('co-retry.js');
 
 function * runDbScript(scriptName) {
     let filePath = './db-scripts/' + scriptName + '_' + (process.env.NODE_ENV || 'dev') + '.sql';

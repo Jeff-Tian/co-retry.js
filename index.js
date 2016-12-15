@@ -61,10 +61,10 @@ function* tryAction(action, maxRetryCount, handlers) {
     }
 
     try {
-        yield action();
+        return yield action();
     } catch (ex) {
         yield handleException(ex, handlers, function*() {
-            yield tryAction(action, maxRetryCount - 1, handlers);
+            return yield tryAction(action, maxRetryCount - 1, handlers);
         });
     }
 }

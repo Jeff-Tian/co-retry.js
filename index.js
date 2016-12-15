@@ -13,7 +13,7 @@ function logException(ex) {
  * @param handler           The handler who can do the job
  * @param retry             The action needs to be taken for retry after error handled
  */
-function* tryHandleError(expectedMessage, ex, handler, retry) {
+function* tryHandleError(expectedMessage, ex, handler, retry, retryResult) {
     if (typeof expectedMessage === 'string') {
         expectedMessage = new RegExp('^' + expectedMessage + '$');
     }
@@ -27,20 +27,20 @@ function* tryHandleError(expectedMessage, ex, handler, retry) {
     yield handler();
 
     if (retry) {
-        yield retry();
+        retryResult.result = yield retry();
     }
 
     return true;
 }
 
-function * handleException(ex, handlers, retry) {
+function * handleException(ex, handlers, retry, retryResult) {
     logException(ex);
 
     let fixed = false;
 
     try {
         for (let i = 0; i < handlers.length; i++) {
-            if (fixed = yield tryHandleError(handlers[i].error, ex, handlers[i].handler, retry)) {
+            if (fixed = yield tryHandleError(handlers[i].error, ex, handlers[i].handler, retry, retryResult)) {
                 break;
             }
         }
@@ -63,9 +63,13 @@ function* tryAction(action, maxRetryCount, handlers) {
     try {
         return yield action();
     } catch (ex) {
+        let retryResult = {};
+
         yield handleException(ex, handlers, function*() {
             return yield tryAction(action, maxRetryCount - 1, handlers);
-        });
+        }, retryResult);
+
+        return retryResult.result;
     }
 }
 

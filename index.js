@@ -25,7 +25,7 @@ function* tryHandleError(expectedMessage, ex, handler, retry, retryResult) {
         return false;
     }
 
-    console.log('handling "', ex.message, '" by ', expectedMessage, '...');
+    console.log('handling "', ex.message, '" by ', expectedMessage, ' with retry: ', !!retry, '...');
     // Handle it
     yield handler();
 
@@ -41,10 +41,11 @@ function * handleException(ex, handlers, retry, retryResult) {
 
     let fixed = false;
 
+    console.log('try to fix it...');
     try {
         for (let i = 0; i < handlers.length; i++) {
             if (fixed = yield tryHandleError(handlers[i].error, ex, handlers[i].handler, retry, retryResult)) {
-                console.log('handled by:', handlers[i].handler);
+                console.log('handled by: ', handlers[i].handler, '. with retry: ', !!retry);
                 break;
             }
         }
@@ -67,12 +68,18 @@ function* tryAction(action, maxRetryCount, handlers) {
 
     try {
         return yield action();
-    } catch (ex) {
+    } catch (actionException) {
         let retryResult = {};
 
-        yield handleException(ex, handlers, function*() {
-            return yield tryAction(action, maxRetryCount - 1, handlers);
-        }, retryResult);
+        try {
+            yield handleException(actionException, handlers, function*() {
+                return yield tryAction(action, maxRetryCount - 1, handlers);
+            }, retryResult);
+        } catch (handlerException) {
+            yield handleException(handlerException, handlers, function *() {
+                return yield tryAction(action, maxRetryCount - 1, handlers);
+            }, retryResult)
+        }
 
         return retryResult.result;
     }

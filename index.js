@@ -18,12 +18,14 @@ function* tryHandleError(expectedMessage, ex, handler, retry, retryResult) {
         expectedMessage = new RegExp('^' + expectedMessage + '$');
     }
 
+    console.log('testing "', ex.message, '" by /', expectedMessage, '/...');
     if (!expectedMessage.test(ex.message)) {
+        console.log(':( can\'t handle it by: ', expectedMessage);
         // I can't handle this
         return false;
     }
 
-    console.log('handling "', ex.message, '" by ', handler, '...');
+    console.log('handling "', ex.message, '" by ', expectedMessage, '...');
     // Handle it
     yield handler();
 

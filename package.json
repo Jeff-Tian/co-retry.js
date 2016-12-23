@@ -1,6 +1,6 @@
 {
   "name": "co-retry.js",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Retry an action specified times automatically if failed with predefined error handlers.",
   "main": "index.js",
   "directories": {

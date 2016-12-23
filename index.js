@@ -23,6 +23,7 @@ function* tryHandleError(expectedMessage, ex, handler, retry, retryResult) {
         return false;
     }
 
+    console.log('handling "', ex.message, '" by ', handler, '...');
     // Handle it
     yield handler();
 
@@ -41,6 +42,7 @@ function * handleException(ex, handlers, retry, retryResult) {
     try {
         for (let i = 0; i < handlers.length; i++) {
             if (fixed = yield tryHandleError(handlers[i].error, ex, handlers[i].handler, retry, retryResult)) {
+                console.log('handled by:', handlers[i].handler);
                 break;
             }
         }

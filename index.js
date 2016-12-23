@@ -20,7 +20,7 @@ function* tryHandleError(expectedMessage, ex, handler, retry, retryResult) {
 
     console.log('testing "', ex.message, '" by /', expectedMessage, '/...');
     if (!expectedMessage.test(ex.message)) {
-        console.log(':( can\'t handle it by: ', expectedMessage);
+        console.log(':( can\'t handle "', ex.message, '" by: ', expectedMessage);
         // I can't handle this
         return false;
     }
@@ -60,6 +60,7 @@ function * handleException(ex, handlers, retry, retryResult) {
 }
 
 function* tryAction(action, maxRetryCount, handlers) {
+    console.log('(:o) trying Action with maxRetryCount = ', maxRetryCount, '...');
     if (maxRetryCount <= 0) {
         return yield action();
     }
